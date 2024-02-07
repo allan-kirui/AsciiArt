@@ -3,7 +3,9 @@ from pathlib import Path
 from PIL import Image
 import os
 
-
+MAX_PIXEL_VALUE = 255
+IMG_RESIZE_HEIGHT = 200
+IMG_RESIZE_WIDTH = 100
 def get_image_path(imageDir, imageName):
     # Finding path to image
     if platform.system() == "Windows":
@@ -16,6 +18,8 @@ def get_image_path(imageDir, imageName):
 def load_image(imagePath):
     # Loading image
     with Image.open(imagePath) as img:
+        #img = img.resize((IMG_RESIZE_HEIGHT,IMG_RESIZE_WIDTH))
+        img.thumbnail((1000, 200))
         size = img.size
 
         print("Successfully loaded Image!\n"
@@ -61,10 +65,23 @@ def get_user_filter_choice():
 
     return filterFunc
 
+def normalize_brightness_matrix(brightnessMatrix):
+    normalizedBrightnessMatrix = []
+    maxPixel = max(map(max, brightnessMatrix))
+    minPixel = min(map(min, brightnessMatrix))
+
+    for row in brightnessMatrix:
+        rescaledRow = []
+        for pixel in row:
+            r = MAX_PIXEL_VALUE * (pixel - minPixel)/ float(maxPixel - minPixel)
+            rescaledRow.append(r)
+        normalizedBrightnessMatrix.append(rescaledRow)
+
+    return normalizedBrightnessMatrix
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     imageDir = Path("images")
-    imageFileName = "ascii-pineapple.jpg"
+    imageFileName = "smallImage.png"
 
     pathToImage = get_image_path(imageDir, imageFileName)
 
@@ -78,25 +95,24 @@ if __name__ == '__main__':
         rowList = [filterFunc(pixel) for pixel in pixels[x]]
         # append list to 2d list
         brightnessMatrix.append(rowList)
+    normalizedBrightnessMatrix = normalize_brightness_matrix(brightnessMatrix)
 
     # convert brightness to ASCII (sorted by thickness)
-    # brightness has a rnage of 0 -255, while ascii chars are from 0 - 64
+    # brightness has a range of 0 -255, while ascii chars are from 0 - 64
     # mapping 255 = 64 therefore e.g.
     # Brightness 180, (180*64)/255 = 45.17
     #  we then round up or down the result
     asciiChar = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
 
     asciiMatrix = []
-    for x in range(len(brightnessMatrix)):
+    for x in range(len(normalizedBrightnessMatrix)):
         asciiRow = []
-        for brightnessVal in range(len(brightnessMatrix[x])):
-            asciiVal = (brightnessMatrix[x][brightnessVal] * 64)/255
-            asciiVal = round(asciiVal)
+        for brightnessVal in range(len(normalizedBrightnessMatrix[x])):
+            asciiVal = round((normalizedBrightnessMatrix[x][brightnessVal] * (len(asciiChar)-1))/MAX_PIXEL_VALUE)
             asciiRow.append(asciiChar[asciiVal])
-            asciiRow.append(asciiChar[asciiVal])
-            asciiRow.append(asciiChar[asciiVal])
+            # asciiRow.append(asciiChar[asciiVal])
+            # asciiRow.append(asciiChar[asciiVal])
         asciiMatrix.append(asciiRow)
 
     print(asciiMatrix)
-
 
