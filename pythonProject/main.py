@@ -9,7 +9,12 @@ IMG_RESIZE_WIDTH = 1000
 
 # Finding path to image
 def get_image_path(imageDir, imageName):
-
+    """
+    function that returns the relative path of the image
+    :param imageDir:
+    :param imageName:
+    :return:
+    """
     if platform.system() == "Windows":
         imagePath = os.path.join(imageDir, imageName)
     else:
@@ -19,6 +24,11 @@ def get_image_path(imageDir, imageName):
 
 # Loading image
 def load_image(imagePath):
+    """
+    function that loads an image and resizes it to a desired size
+    :param imagePath:
+    :return:
+    """
     with Image.open(imagePath) as img:
         img.thumbnail((IMG_RESIZE_WIDTH, IMG_RESIZE_HEIGHT))
         size = img.size
@@ -30,16 +40,35 @@ def load_image(imagePath):
     return [pixls[i:i+img.width] for i in range(0, len(pixls), img.width)]
 
 def rgb_average(rgbTuple):
+    """
+        function that convert rgb to average value of rbg values
+        :param rgbTuple:
+        :return:
+        """
     average = sum(rgbTuple) / len(rgbTuple)
     return average
 
 def rgb_to_lightness(rgbTuple):
+    """
+        function that convert rgb to lightness value
+        :param rgbTuple:
+        :return:
+        """
     return (max(rgbTuple) + min(rgbTuple))/2
 
 def rgb_to_luminosity(rgbTuple):
+    """
+    function that convert rgb to luminosity value
+    :param rgbTuple:
+    :return:
+    """
     return 0.21 * rgbTuple[0] + 0.72 * rgbTuple[1] + 0.07 * rgbTuple[2]
 
 def get_user_filter_choice():
+    """
+    function that returns the appropriate filter chosen by user
+    :rtype: object
+    """
     # Get Filter input from user
     print("Which filter do you want to use on image?")
     print("Input either 0,1 or 2 for corresponding filters.\n"
@@ -66,6 +95,11 @@ def get_user_filter_choice():
     return filterFunc
 
 def normalize_brightness_matrix(brightnessMatrix):
+    """
+    Function that normalizes pixels brightess values
+    :param brightnessMatrix:
+    :return:
+    """
     normalizedBrightnessMatrix = []
     maxPixel = max(map(max, brightnessMatrix))
     minPixel = min(map(min, brightnessMatrix))
@@ -82,7 +116,7 @@ def normalize_brightness_matrix(brightnessMatrix):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     imageDir = Path("images")
-    imageFileName = "smallImage.png"
+    imageFileName = "stripes.png"
 
     pathToImage = get_image_path(imageDir, imageFileName)
 
