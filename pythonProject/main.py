@@ -3,6 +3,7 @@ from pathlib import Path
 from PIL import Image
 import os
 
+
 def get_image_path(imageDir, imageName):
     # Finding path to image
     if platform.system() == "Windows":
@@ -34,15 +35,7 @@ def rgb_to_lightness(rgbTuple):
 def rgb_to_luminosity(rgbTuple):
     return 0.21 * rgbTuple[0] + 0.72 * rgbTuple[1] + 0.07 * rgbTuple[2]
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    imageDir = Path("images")
-    imageFileName = "ascii-pineapple.jpg"
-
-    pathToImage = get_image_path(imageDir, imageFileName)
-
-    pixels = load_image(pathToImage)
-
+def get_user_filter_choice():
     # Get Filter input from user
     print("Which filter do you want to use on image?")
     print("Input either 0,1 or 2 for corresponding filters.\n"
@@ -55,13 +48,29 @@ if __name__ == '__main__':
 
         if filterVal == "0":
             filterFunc = rgb_average
+            print("Average filter chosen")
         elif filterVal == "1":
             filterFunc = rgb_to_lightness
+            print("Lightness filter chosen")
         else:
             filterFunc = rgb_to_luminosity
+            print("Luminosity filter chosen")
     except Exception as e:
-            print(f"Error: {e}")
-            print("Invalid value given. Defaulting to Luminosity filter.")
+        print(f"Error: {e}")
+        print("Invalid value given. Defaulting to Luminosity filter.")
+
+    return filterFunc
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    imageDir = Path("images")
+    imageFileName = "ascii-pineapple.jpg"
+
+    pathToImage = get_image_path(imageDir, imageFileName)
+
+    pixels = load_image(pathToImage)
+
+    filterFunc = get_user_filter_choice()
 
     brightnessMatrix = []
     for x in range(len(pixels)):
@@ -70,4 +79,24 @@ if __name__ == '__main__':
         # append list to 2d list
         brightnessMatrix.append(rowList)
 
-    print(brightnessMatrix)
+    # convert brightness to ASCII (sorted by thickness)
+    # brightness has a rnage of 0 -255, while ascii chars are from 0 - 64
+    # mapping 255 = 64 therefore e.g.
+    # Brightness 180, (180*64)/255 = 45.17
+    #  we then round up or down the result
+    asciiChar = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+
+    asciiMatrix = []
+    for x in range(len(brightnessMatrix)):
+        asciiRow = []
+        for brightnessVal in range(len(brightnessMatrix[x])):
+            asciiVal = (brightnessMatrix[x][brightnessVal] * 64)/255
+            asciiVal = round(asciiVal)
+            asciiRow.append(asciiChar[asciiVal])
+            asciiRow.append(asciiChar[asciiVal])
+            asciiRow.append(asciiChar[asciiVal])
+        asciiMatrix.append(asciiRow)
+
+    print(asciiMatrix)
+
+
