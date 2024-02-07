@@ -1,16 +1,25 @@
-# This is a sample Python script.
+import platform
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from PIL import Image
+import os
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def load_image(pathToImage):
+    pass
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    imageFileName = "ascii-pineapple.jpg"
+    pathToImage = ''
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # Finding path to image
+    if platform.system() == "Windows":
+        import os
+        pathToImage = os.path.join("images", imageFileName)
+    else:
+        import pathlib as Path
+        pathToImage = Path("images").joinpath(imageFileName)
+
+
+    print(pathToImage)
+    print(platform.system())
