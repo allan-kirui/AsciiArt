@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="Ascii art logo" width="615">
+  <img src="pythonProject/logo.png" alt="Ascii art logo" width="615">
 </p>
 
 <p align="center">
@@ -36,5 +36,5 @@ IMG_RESIZE_HEIGHT and IMG_RESIZE_WIDTH: Image resizing parameters.
 
 ## Example result
 <p align="center">
-  <img src="resultImages/resultofStripes.png" alt="Ascii art example" width="615">
+  <img src="pythonProject/resultImages/resultofStripes.png" alt="Ascii art example" width="615">
 </p>
