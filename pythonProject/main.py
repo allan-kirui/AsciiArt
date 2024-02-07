@@ -5,9 +5,11 @@ import os
 
 MAX_PIXEL_VALUE = 255
 IMG_RESIZE_HEIGHT = 200
-IMG_RESIZE_WIDTH = 100
+IMG_RESIZE_WIDTH = 1000
+
+# Finding path to image
 def get_image_path(imageDir, imageName):
-    # Finding path to image
+
     if platform.system() == "Windows":
         imagePath = os.path.join(imageDir, imageName)
     else:
@@ -15,16 +17,14 @@ def get_image_path(imageDir, imageName):
     
     return imagePath
 
+# Loading image
 def load_image(imagePath):
-    # Loading image
     with Image.open(imagePath) as img:
-        #img = img.resize((IMG_RESIZE_HEIGHT,IMG_RESIZE_WIDTH))
-        img.thumbnail((1000, 200))
+        img.thumbnail((IMG_RESIZE_WIDTH, IMG_RESIZE_HEIGHT))
         size = img.size
 
         print("Successfully loaded Image!\n"
               "Image Size: " + str(size))
-        #img = img.thumbnail((img.height, 200))
         pixls = list(img.getdata())
 
     return [pixls[i:i+img.width] for i in range(0, len(pixls), img.width)]
@@ -59,7 +59,7 @@ def get_user_filter_choice():
         else:
             filterFunc = rgb_to_luminosity
             print("Luminosity filter chosen")
-    except Exception as e:
+    except ValueError as e:
         print(f"Error: {e}")
         print("Invalid value given. Defaulting to Luminosity filter.")
 
@@ -78,6 +78,7 @@ def normalize_brightness_matrix(brightnessMatrix):
         normalizedBrightnessMatrix.append(rescaledRow)
 
     return normalizedBrightnessMatrix
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     imageDir = Path("images")
@@ -98,7 +99,7 @@ if __name__ == '__main__':
     normalizedBrightnessMatrix = normalize_brightness_matrix(brightnessMatrix)
 
     # convert brightness to ASCII (sorted by thickness)
-    # brightness has a range of 0 -255, while ascii chars are from 0 - 64
+    # brightness has a range of 0 - 255, while ascii chars are from 0 - 64
     # mapping 255 = 64 therefore e.g.
     # Brightness 180, (180*64)/255 = 45.17
     #  we then round up or down the result
