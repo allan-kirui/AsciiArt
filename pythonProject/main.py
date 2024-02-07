@@ -42,12 +42,31 @@ if __name__ == '__main__':
     pathToImage = get_image_path(imageDir, imageFileName)
 
     pixels = load_image(pathToImage)
+
+    # Get Filter input from user
+    print("Which filter do you want to use on image?")
+    print("Input either 0,1 or 2 for corresponding filters.\n"
+          "0. Average\n"
+          "1. Lightness\n"
+          "2. Luminosity\n")
+
+    try:
+        filterVal = input()
+
+        if filterVal == "0":
+            filterFunc = rgb_average
+        elif filterVal == "1":
+            filterFunc = rgb_to_lightness
+        else:
+            filterFunc = rgb_to_luminosity
+    except Exception as e:
+            print(f"Error: {e}")
+            print("Invalid value given. Defaulting to Luminosity filter.")
+
     brightnessMatrix = []
-    print("Iterating through pixels (R,G,B): ")
     for x in range(len(pixels)):
         brightnessRow = []
-        for y in range(len(pixels[x])):
-            rowList = list(map(rgb_average, pixels[x]))
+        rowList = [filterFunc(pixel) for pixel in pixels[x]]
         # append list to 2d list
         brightnessMatrix.append(rowList)
 
